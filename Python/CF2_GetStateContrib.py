@@ -13,7 +13,7 @@ from csv import DictWriter
 wrksp = "/workspaces/vscode-remote-try-python/DATA/State Races"
 dirHDContrib = os.path.join(wrksp, "2022HD")
 dirOut = wrksp
-fileNameOut = os.path.join(dirOut, "2022HD_Contrib_All.csv")
+fileNameOut = os.path.join(dirOut, "2022HD_Contrib_byDistrict.csv")
 
 if not os.path.exists(dirOut) :
     os.mkdir(dirOut)
@@ -130,17 +130,21 @@ with open(fileNameOut, 'w', newline='') as write_csv:
 
     for district in dictDistrict :
         dictParty = dictDistrict[district]
-        DEM_Candidate = dictParty["DEM"]
-        REP_Candidate = dictParty["REP"]
+        DEM_Candidate = CandidateClass() # allow for no candidate that ran in the district
+        if ("DEM" in dictParty) :
+            DEM_Candidate = dictParty["DEM"]
+        REP_Candidate = CandidateClass() # allow for no candidate that ran in the district
+        if ("REP" in dictParty) :
+            REP_Candidate = dictParty["REP"]
 
         rowOut = {}
         rowOut["district"] = district
         rowOut["DEM_Candidate"] = DEM_Candidate.name
         rowOut["DEM_Total"] = DEM_Candidate.total
-        rowOut["DEM_party"] = DEM_Candidate.party_amount
+        rowOut["DEM_Party"] = DEM_Candidate.party_amount
         rowOut["REP_Candidate"] = REP_Candidate.name
         rowOut["REP_Total"] = REP_Candidate.total
-        rowOut["REP_party"] = REP_Candidate.party_amount
+        rowOut["REP_Party"] = REP_Candidate.party_amount
 
         # calcuate overspend and total
         overspend = 0.0

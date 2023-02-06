@@ -12,7 +12,7 @@ from csv import DictWriter
 
 wrksp = "/workspaces/vscode-remote-try-python/DATA/State Races"
 dirHDContrib = os.path.join(wrksp, "2022HD")
-dirOut = wrksp
+dirOut = "/workspaces/vscode-remote-try-python/Results/State Races"
 fileNameOut = os.path.join(dirOut, "2022HD_Contrib_byDistrict.csv")
 
 if not os.path.exists(dirOut) :

@@ -15,7 +15,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "pip install --user -r requirements.txt",
-	"postCreateCommand": "pip install pandas" 
+	"postCreateCommand": "pip install pandas && pip install selenium && pip install webdriver-manager"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

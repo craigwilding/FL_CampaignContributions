@@ -29,7 +29,17 @@ I amusing the [Selenium Web Driver](https://www.selenium.dev/documentation/webdr
 I have not yet added the python scripts that do the web-scraping.  I will add these if I am able to add 
 Selenium and the [Chrome web-driver](https://chromedriver.chromium.org/downloads) to the codespace.
 
-
+### Data Processing
+This is the order I am running the scripts:
+#### Retrieve Data
+1. CF0_GetWebFLContribHD2022.py   (NOTE: Ran outside of codespace)  This uses Selenium web driver to pull data from the Florida Contributions Database
+#### Clean Data
+2. CF1_FixBadData.py   - Fixes contribution files that got converted to binary due to bad data.
+3. CF1a_RemoveAddressInfo.py - Remove the street address for security.  I don't want to publish a person's personal address
+#### Process
+4. CF2_GetStateHDContrib.py - Parse the contribution files and count totals per state house district
+#### Results
+5. 2022HD_Contrib_byDistrict.csv - Table of contributions per state house district
 ## Contributing
 
 This project has been made public for prospective employers to see as an example of data that I work with.

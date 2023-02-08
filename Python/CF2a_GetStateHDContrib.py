@@ -12,11 +12,7 @@ from csv import DictWriter
 
 wrksp = "/workspaces/vscode-remote-try-python/DATA/State Races"
 dirHDContrib = os.path.join(wrksp, "2022HD")
-dirOut = "/workspaces/vscode-remote-try-python/Results/State Races"
-fileNameOut = os.path.join(dirOut, "2022HD_Contrib_byDistrict.csv")
 
-if not os.path.exists(dirOut) :
-    os.mkdir(dirOut)
 
 os.chdir(wrksp)
 
@@ -29,7 +25,7 @@ EOL = '\n'
 # Data Definitions
 # dictDistrict[] = dict[party]
 ############################################################
-dictDistrict = {}
+
 
 # Candidate class to hold candidate info
 class CandidateClass:
@@ -66,107 +62,123 @@ def isPartyDonor(contributor, party_code) :
 # Read through each candidate contribution file
 # check for donations from Republican party
 ############################################################
-for contribFile in os.listdir(dirHDContrib) :
-    print(contribFile)
-    # get district number from HD###_Candidate.csv
-    nameParts = contribFile.split('_')
-    districtStr = nameParts[0] # get first part HD###
-    districtStr = districtStr[2:]  # skip first 2 chars
-    district = int(districtStr)
-    party = nameParts[1]
-    firstName = nameParts[2]
-    lastName = nameParts[3]
+def CountContributions(dirIn, fileNameOut) :
+    dictDistrict = {}
+    districtType = ""
+    for contribFile in os.listdir(dirIn) :
+        print(contribFile)
+        # get district number from HD###_Candidate.csv
+        nameParts = contribFile.split('_')
+        districtStr = nameParts[0] # get first part HD###
+        districtType = districtStr[0:2] 
+        districtStr = districtStr[2:]  # skip first 2 chars
+        district = int(districtStr)
+        party = nameParts[1]
+        firstName = nameParts[2]
+        lastName = nameParts[3]
 
-    # check each HD contribution
-    fileNameIn = os.path.join(dirHDContrib, contribFile)
-    with open(fileNameIn, 'r') as read_obj:
-        csv_dict_reader = DictReader(read_obj)
+        # check each HD contribution
+        fileNameIn = os.path.join(dirIn, contribFile)
+        with open(fileNameIn, 'r') as read_obj:
+            csv_dict_reader = DictReader(read_obj)
 
-        Candidate = CandidateClass()
-        Candidate.district = district
-        Candidate.party = party
-        Candidate.name = firstName + " " + lastName
+            Candidate = CandidateClass()
+            Candidate.district = district
+            Candidate.party = party
+            Candidate.name = firstName + " " + lastName
 
-        for row in csv_dict_reader:  
+            for row in csv_dict_reader:  
+                
+                amountIn = float(row["Amount"])
+                Candidate.total += amountIn
+                contributor = row["Contributor Name"]
+                # check for party donor
+                if (isPartyDonor(contributor, party)) :
+                    Candidate.party_amount += amountIn
+                # end isPartyDonor
+
+                #end if
+            # end for each row
             
-            amountIn = float(row["Amount"])
-            Candidate.total += amountIn
-            contributor = row["Contributor Name"]
-            # check for party donor
-            if (isPartyDonor(contributor, party)) :
-                Candidate.party_amount += amountIn
-            # end isPartyDonor
+            # Save to dictionary
+            if (district in dictDistrict) :
+                dictParties = dictDistrict[district]
+                dictParties[party] = Candidate
+                dictDistrict[district] = dictParties
+            else :
+                # new entry
+                dictParties = {}
+                dictParties[party] = Candidate
+                dictDistrict[district] = dictParties
+            # end add to dictionary
 
-            #end if
-        # end for each row
-        
-        # Save to dictionary
-        if (district in dictDistrict) :
-            dictParties = dictDistrict[district]
-            dictParties[party] = Candidate
-            dictDistrict[district] = dictParties
-        else :
-            # new entry
-            dictParties = {}
-            dictParties[party] = Candidate
-            dictDistrict[district] = dictParties
-        # end add to dictionary
+        # end with read csv
+        del read_obj
+    # end for contrib directory
 
-    # end with read csv
-    del read_obj
-# end for contrib directory
+    with open(fileNameOut, 'w', newline='') as write_csv:
+        # field names
+        fields = ['district']
+        fields += ['DEM_Candidate', 'DEM_Total', 'DEM_Party']
+        fields += ['REP_Candidate', 'REP_Total', 'REP_Party']
+        fields += ['overspend', 'district_total']
+        # write column headers 
+        csvwriter = csv.DictWriter(write_csv, fieldnames = fields)
+        csvwriter.writeheader()
+        rowsOut = []
 
+        for district in dictDistrict :
+            dictParty = dictDistrict[district]
+            DEM_Candidate = CandidateClass() # allow for no candidate that ran in the district
+            if ("DEM" in dictParty) :
+                DEM_Candidate = dictParty["DEM"]
+            REP_Candidate = CandidateClass() # allow for no candidate that ran in the district
+            if ("REP" in dictParty) :
+                REP_Candidate = dictParty["REP"]
 
-with open(fileNameOut, 'w', newline='') as write_csv:
-    # field names
-    fields = ['district']
-    fields += ['DEM_Candidate', 'DEM_Total', 'DEM_Party']
-    fields += ['REP_Candidate', 'REP_Total', 'REP_Party']
-    fields += ['overspend', 'district_total']
-    # write column headers 
-    csvwriter = csv.DictWriter(write_csv, fieldnames = fields)
-    csvwriter.writeheader()
-    rowsOut = []
+            rowOut = {}
+            rowOut["district"] = district
+            rowOut["DEM_Candidate"] = DEM_Candidate.name
+            rowOut["DEM_Total"] = DEM_Candidate.total
+            rowOut["DEM_Party"] = DEM_Candidate.party_amount
+            rowOut["REP_Candidate"] = REP_Candidate.name
+            rowOut["REP_Total"] = REP_Candidate.total
+            rowOut["REP_Party"] = REP_Candidate.party_amount
 
-    for district in dictDistrict :
-        dictParty = dictDistrict[district]
-        DEM_Candidate = CandidateClass() # allow for no candidate that ran in the district
-        if ("DEM" in dictParty) :
-            DEM_Candidate = dictParty["DEM"]
-        REP_Candidate = CandidateClass() # allow for no candidate that ran in the district
-        if ("REP" in dictParty) :
-            REP_Candidate = dictParty["REP"]
+            # calcuate overspend and total
+            overspend = 0.0
+            if (DEM_Candidate.total > REP_Candidate.total) :
+                overspend = DEM_Candidate.total - REP_Candidate.total
+            else :
+                overspend = REP_Candidate.total - DEM_Candidate.total
 
-        rowOut = {}
-        rowOut["district"] = district
-        rowOut["DEM_Candidate"] = DEM_Candidate.name
-        rowOut["DEM_Total"] = DEM_Candidate.total
-        rowOut["DEM_Party"] = DEM_Candidate.party_amount
-        rowOut["REP_Candidate"] = REP_Candidate.name
-        rowOut["REP_Total"] = REP_Candidate.total
-        rowOut["REP_Party"] = REP_Candidate.party_amount
+            district_total = DEM_Candidate.total + REP_Candidate.total
+                
+            rowOut["overspend"] = overspend
+            rowOut["district_total"] = district_total
+            rowsOut.append(rowOut)
 
-        # calcuate overspend and total
-        overspend = 0.0
-        if (DEM_Candidate.total > REP_Candidate.total) :
-            overspend = DEM_Candidate.total - REP_Candidate.total
-        else :
-            overspend = REP_Candidate.total - DEM_Candidate.total
+            print(districtType + str(Candidate.district) + " DEM Total: $" + str(DEM_Candidate.total)  + " REP Total: $" + str(REP_Candidate.total))
+        # end for candidates
 
-        district_total = DEM_Candidate.total + REP_Candidate.total
-            
-        rowOut["overspend"] = overspend
-        rowOut["district_total"] = district_total
-        rowsOut.append(rowOut)
+        csvwriter.writerows(rowsOut)
+        print("WRITE file: " + fileNameOut)
+    # end write csv
 
-        print("HD" + str(Candidate.district) + " DEM Total: $" + str(DEM_Candidate.total)  + " REP Total: $" + str(REP_Candidate.total))
-    # end for candidates
+    del write_csv
+    del rowsOut
 
-    csvwriter.writerows(rowsOut)
-    print("WRITE file: " + fileNameOut)
-# end write csv
+    del dictDistrict
+# end CountContributions
 
-del write_csv
-del rowsOut
+dirOut = "/workspaces/vscode-remote-try-python/Results/State Races"
+if not os.path.exists(dirOut) :
+    os.mkdir(dirOut)
 
-del dictDistrict        
+dirHDContrib = os.path.join(wrksp, "2022HD")
+fileNameOut = os.path.join(dirOut, "2022HD_Contrib_byDistrict.csv")
+CountContributions(dirHDContrib, fileNameOut)
+
+dirSDContrib = os.path.join(wrksp, "2022SD")
+fileNameOut = os.path.join(dirOut, "2022SD_Contrib_byDistrict.csv")
+CountContributions(dirSDContrib, fileNameOut)   

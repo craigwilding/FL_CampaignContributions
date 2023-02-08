@@ -9,22 +9,33 @@ import pandas as pd
 ############################################################
 
 wrksp = "/workspaces/vscode-remote-try-python/DATA/State Races"
-dirHDContrib = os.path.join(wrksp, "2022HD")
 print(wrksp)
 
 TAB = "\t"
 EOL = '\n'
 
-# Read each file as a csv.  If it cannot read it, then parse to remove errors
-for contribFile in os.listdir(dirHDContrib) :
-    print(contribFile)
-    fileNameIn = os.path.join(dirHDContrib, contribFile)
+def removeAddresses(dirIn) :
+    addressColumn = 'Address'
+    # Read each file as a csv.  If it cannot read it, then parse to remove errors
+    for contribFile in os.listdir(dirIn) :
+        print(contribFile)
+        fileNameIn = os.path.join(dirIn, contribFile)
 
-    # load into pandas data
-    dataFrame = pd.read_csv(fileNameIn)
-    # Drop 'Address' column
-    dataFrame.pop('Address')
-    # write back to csv
-    dataFrame.to_csv(fileNameIn)
+        # load into pandas data
+        dataFrame = pd.read_csv(fileNameIn)
+        listColumnNames = list(dataFrame.columns)
+        if (addressColumn in listColumnNames) :
+            # Drop 'Address' column
+            dataFrame.pop(addressColumn)
+            # write back to csv
+            dataFrame.to_csv(fileNameIn)
+        # end if Address Column exists
 
-# end for each file
+    # end for each file
+# end removeAddresses
+
+dirHDContrib = os.path.join(wrksp, "2022HD")
+removeAddresses(dirHDContrib)
+
+dirSDContrib = os.path.join(wrksp, "2022SD")
+removeAddresses(dirSDContrib)

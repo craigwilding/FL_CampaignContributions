@@ -37,9 +37,10 @@ This is the order I am running the scripts:
 2. CF1_FixBadData.py   - Fixes contribution files that got converted to binary due to bad data.
 3. CF1a_RemoveAddressInfo.py - Remove the street address for security.  I don't want to publish a person's personal address
 #### Process
-4. CF2_GetStateHDContrib.py - Parse the contribution files and count totals per state house district
+4. CF2_GetStateContrib.py - Parse the contribution files and count totals per state house district
 #### Results
 5. 2022HD_Contrib_byDistrict.csv - Table of contributions per state house district
+6. 2022SD_Contrib_byDistrict.csv - Table of contributions per state senate district
 ## Contributing
 
 This project has been made public for prospective employers to see as an example of data that I work with.

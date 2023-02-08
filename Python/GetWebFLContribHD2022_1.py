@@ -10,14 +10,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-import sys
-sys.path.append('F:\SOEData\Scripts\TAB2CSV')
-import tab2csv as TABCSV
+#import sys
+#sys.path.append('F:\SOEData\Scripts\TAB2CSV')
+#import tab2csv as TABCSV
 
 #################################################
 # Get FL HD contributions by candidate
 #################################################
-wrksp = r"F:\SOEData\Campaign Finance\State Races"
+wrksp = "/workspaces/vscode-remote-try-python/DATA/State Races"
 ElectionYear = "2022"
 districtType = "HD"
 office = 'State Representative                              '
@@ -32,10 +32,16 @@ if (not os.path.exists(dirContributions)) :
 
 TAB = "\t"
 EOL = '\n'
-chromeDriver = r"C:\Python27\chromedriver_win32\chromedriver.exe"
-Downloads = r"C:\Users\craig\Downloads"
-print("Laoding Chrome Driver from: " + chromeDriver)
-browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+#chromeDriver = r"C:\Python27\chromedriver_win32\chromedriver.exe" # old method
+# set download path for Chrome driver
+Downloads = "/workspaces/vscode-remote-try-python/DATA/Downloads"
+options = webdriver.ChromeOptions()
+prefs = {}
+prefs["profile.default_content_settings.popups"]=0
+prefs["download.default_directory"]=Downloads
+options.add_experimental_option("prefs", prefs)
+#print("Laoding Chrome Driver from: " + chromeDriver)
+browser = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
 # browser = webdriver.Chrome(executable_path=chromeDriver) # deprecated
 
 
@@ -90,6 +96,7 @@ with open(fileNameCandidates, 'r') as read_obj:
 
         elem = browser.find_element(By.NAME,'Submit').click()
 
+        # gets downloaded as 'Contrib.txt' note it includes the ' around the name
         contribFile = os.path.join(Downloads, "'Contrib.txt'")
         while not os.path.exists(contribFile):
             time.sleep(1)
@@ -98,13 +105,14 @@ with open(fileNameCandidates, 'r') as read_obj:
         lastName = lastName.replace(' ','-').replace('.',"").replace('"',"")
         tempFileName = districtType + district + "_" + party + '_' + firstName + '_' + lastName + '_contrib'
         tab_file = os.path.join(Downloads, tempFileName + '.tab')
-        # print("Renaming to: " + tab_file)
+        print("Renaming to: " + tab_file)
         os.replace(contribFile, tab_file)
         #print("Converting from TAB to CSV")
-        TABCSV.convertTAB2CSV(tab_file,True)        
-        tab_file = tab_file.replace(".tab",".csv")
-        csv_file = os.path.join(dirContributions, tempFileName + '.csv')
-        #print("Moving to: " + csv_file)
+        #TABCSV.convertTAB2CSV(tab_file,True)        
+        #tab_file = tab_file.replace(".tab",".csv")
+        #csv_file = os.path.join(dirContributions, tempFileName + '.csv')
+        csv_file = os.path.join(dirContributions, tempFileName + '.tab')
+        print("Moving to: " + csv_file)
         shutil.move(tab_file, csv_file)
    
     #end for each row

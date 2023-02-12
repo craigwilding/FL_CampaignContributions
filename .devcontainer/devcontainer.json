@@ -15,7 +15,14 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "pip install --user -r requirements.txt",
-	"postCreateCommand": "pip install pandas && pip install selenium && pip install webdriver-manager && pip install psycopg2"
+	"postCreateCommand": "pip install pandas && pip install selenium && pip install webdriver-manager && pip install psycopg2",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GrapeCity.gc-excelviewer"
+			]
+		}
+	}
 
 	// Configure tool-specific properties.
 	// "customizations": {},

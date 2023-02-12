@@ -29,16 +29,25 @@ I amusing the [Selenium Web Driver](https://www.selenium.dev/documentation/webdr
 I have not yet added the python scripts that do the web-scraping.  I will add these if I am able to add 
 Selenium and the [Chrome web-driver](https://chromedriver.chromium.org/downloads) to the codespace.
 
-### Data Processing
+## Data Processing
 This is the order I am running the scripts:
-#### Retrieve Data
+### Extract
 1. CF0_GetWebFLContribHD2022.py   (NOTE: Ran outside of codespace)  This uses Selenium web driver to pull data from the Florida Contributions Database
-#### Clean Data
 2. CF1_FixBadData.py   - Fixes contribution files that got converted to binary due to bad data.
-3. CF1a_RemoveAddressInfo.py - Remove the street address for security.  I don't want to publish a person's personal address
-#### Process
+3. CF1a_RemoveAddressInfo.py - Remove the street address for security.  I don't want to publish a person's personal address 
+4. Upload voter files from the [Florida Division of Elections](https://dos.myflorida.com/elections/data-statistics/voter-registration-statistics/voter-extract-disk-request/) into the DATA/VoterFiles Folder
+
+### Transform
+1. VF_TRFM1_RemoveAddress.py   Remove address, phone, email and unneeded columns from original voter file
+2. VF_TRFM2_AddHeader.py   Add column headers for later use
+1. VF_TRFM3_RemoveExempt.py   Remove exempt records where voter info is hidden
+### Load
+1. CREATE_Voters2022.py   Create Voter database
+2. LOAD_Voters2022.py   Load Voter database from transformed DB file
+
+### Process
 4. CF2_GetStateContrib.py - Parse the contribution files and count totals per state house district
-#### Results
+### Results
 5. 2022HD_Contrib_byDistrict.csv - Table of contributions per state house district
 6. 2022SD_Contrib_byDistrict.csv - Table of contributions per state senate district
 ## Contributing

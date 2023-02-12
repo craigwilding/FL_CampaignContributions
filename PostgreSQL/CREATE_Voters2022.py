@@ -1,13 +1,11 @@
-import os
-import shutil
 import psycopg2 
-import csv
-from csv import DictReader
 
-SQT = "'"
-
-dirData = "F:\Voter Disks\Voter History"
-dirVoterFiles = os.path.join(dirData, "Latest_2022", "DBFiles")
+SINGLE_QT = "'"
+###########################################
+# Create Voter Table
+# This holds the voter's data parsed from the voter files
+# Street Address information is removed
+###########################################
 
 with psycopg2.connect( host='localhost', user='postgres', password='postgres', dbname='postgres') as conn:
 
@@ -23,17 +21,25 @@ with psycopg2.connect( host='localhost', user='postgres', password='postgres', d
     sql += " county character varying(3) NOT NULL,"
     sql += " voterid integer NOT NULL,"
     sql += " lastname character varying(30),"
+    sql += " suffix character varying(5),"
     sql += " firstname character varying(30),"
     sql += " middle character varying(30),"
-    sql += " suffix character varying(5),"
+    sql += " exempt character(1) NOT NULL,"
     sql += " rescity character varying(40),"
     sql += " resstate character(2),"
     sql += " reszip character varying(10) ,"
-    sql += " birth_date date,"
-    sql += " party character varying(3) NOT NULL,"
-    sql += " active character varying(3) NOT NULL,"
     sql += " gender character(1),"
-    sql += " race character varying(20),"
+    sql += " race integer,"
+    sql += " birth_date date,"
+    sql += " registration_date date,"
+    sql += " party character varying(3) NOT NULL,"
+    sql += " precinct character varying(6) NOT NULL,"
+    sql += " active character varying(3) NOT NULL,"
+    sql += " congress integer,"
+    sql += " house integer,"
+    sql += " senate integer,"
+    sql += " countycom integer,"
+    sql += " schoolboard integer,"
     sql += "CONSTRAINT voters_2022_gen_pkey PRIMARY KEY (voterid)"
     sql += " ); "
     
@@ -42,6 +48,7 @@ with psycopg2.connect( host='localhost', user='postgres', password='postgres', d
         cur.execute(sql)
         print("CREATED TABLE")
     # end with cursor
+
 # end with connection
 print("****************************")
 print("Finished")

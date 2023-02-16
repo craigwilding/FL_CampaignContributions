@@ -19,7 +19,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"GrapeCity.gc-excelviewer"
+				"GrapeCity.gc-excelviewer",
+				"george-alisson.html-preview-vscode"
 			]
 		}
 	}

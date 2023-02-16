@@ -3,7 +3,7 @@
 This collects campaign contribution data pulled from the [FL Campaign Finance Database](https://dos.elections.myflorida.com/campaign-finance/contributions/).  I have added the campaign contributions of all [FL House and Senate candidates](https://dos.elections.myflorida.com/candidates/Index.asp) in 2022.  The Python scripts go through the contribution files and counts the campaign contributions raised in each district.
 
 ## District Comparisons
-It creates a .csv file in the **Results** folder which contains counts for each district and candidate. 
+This creates a .csv file in the **Results** folder which contains counts for each district and candidate. 
 The available columns are
 1. District number
 2. DEM Candidate Name

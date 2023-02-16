@@ -1,9 +1,43 @@
 <html>
     <head>
-        <title>VS Code Rocks!</title>
+        <title>Florida Campaign Contributions</title>
     </head>
     <body>
-        <h1>VS Code can do that?</h1>
-        <p>Yes it can!</p>
+        <h1>Florida Campaign Contributions</h1>
+        <p>This project collects campaign contribution data pulled from the <a href="https://dos.elections.myflorida.com/campaign-finance/contributions/">FL Campaign Finance Database</a>  
+        <p>The data is used for:</p>
+        <ol>
+            <li>Count the amount of campaign contributions per district</li>
+            <li>Identify the voter id of the campaign donors so candidates can use the information.</li>
+        </ol>
+        </p>
+        <h2>Contribution Data</h2>
+        <p>
+            I have added the campaign contributions of all <a href="https://dos.elections.myflorida.com/candidates/Index.asp">FL House and Senate candidates</a> in 2022.</p>
+            The contribution data is stored in the folders:
+            <ul>
+                <li>DATA / State Races / <a href="https://github.com/craigwilding/FL_CampaignContributions/blob/b9adb3dac22de933e191d37b7e58a9b0d1ec11bc/DATA/State Races/2022HD">2022HD</a> for 2022 FL State House District Races</li>
+                <li>DATA / State Races / <a href="https://github.com/craigwilding/FL_CampaignContributions/blob/b9adb3dac22de933e191d37b7e58a9b0d1ec11bc/DATA/State Races/2022SD">2022SD</a> for 2022 FL State Senate District Races</li>
+            </ul>
+        <h3>Contribution Counts</h2>
+        <p>The total contributions per districts are located in the CSV files below:
+            <ul>
+                <li>Results / State Races / <a href="https://github.com/craigwilding/FL_CampaignContributions/blob/b9adb3dac22de933e191d37b7e58a9b0d1ec11bc/Results/State Races/2022HD_Contrib_byDistrict.csv">2022HD_Contrib_byDistrict.csv</a> for 2022 FL State House District Races</li>
+                <li>Results / State Races / <a href="https://github.com/craigwilding/FL_CampaignContributions/blob/b9adb3dac22de933e191d37b7e58a9b0d1ec11bc/Results/State Races/2022SD_Contrib_byDistrict.csv">2022SD_Contrib_byDistrict.csv</a> for 2022 FL State Senate District Races</li>
+            </ul>
+        <p>The contribution counts contain the following fields:</p>
+            <ol>
+                <li>District number</li>
+                <li>DEM Candidate - Candidaet name*</li>
+                <li>DEM Total - The total amount the campaign received</li>
+                <li>DEM Party - The amount of campaign funds received from the candidate's party</li>
+                <li>REP Candidate - Candidaet name*</li>
+                <li>REP Total - The total amount the campaign received</li>
+                <li>REP Party - The amount of campaign funds received from the candidate's party</li>
+                <li>Overspend - The amount the candidate with the most money outspent the other</li>
+                <li>District Total - The total amount raised by both candidates</li>
+                <p>* An empty candidate name indicates no party candidate ran and the opponent ran unopposed in the general election.  
+                    There may have been party challengers in the primary election.</p>
+            </ol>
     </body>
 </html>

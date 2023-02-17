@@ -1,4 +1,10 @@
 import psycopg2 
+import sys
+sys.path.insert(0, '/workspaces/vscode-remote-try-python/PostgreSQL')
+import SQLCommands as SQL
+
+table = "voters_2022_gen"
+listIndexes = ["active", "county", "party", "house", "senate"]
 
 SINGLE_QT = "'"
 ###########################################
@@ -7,80 +13,21 @@ SINGLE_QT = "'"
 # Street Address information is removed
 ###########################################
 
-with psycopg2.connect( host='localhost', user='postgres', password='postgres', dbname='postgres') as conn:
+with SQL.Connect()  as conn:
 
     ##########################################################
     # Create Indexes
     ##########################################################
-    sql = "DROP INDEX IF EXISTS voters_2022_gen_active_idx;"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-    sql = "CREATE INDEX IF NOT EXISTS voters_2022_gen_active_idx"
-    sql += " ON voters_2022_gen USING btree"
-    sql += " (active ASC NULLS LAST)"
-    sql += ";"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-
-    sql = "DROP INDEX IF EXISTS voters_2022_gen_county_idx;"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-    sql = "CREATE INDEX IF NOT EXISTS voters_2022_gen_county_idx"
-    sql += " ON voters_2022_gen USING btree"
-    sql += " (county ASC NULLS LAST)"
-    sql += ";"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-
-    sql = "DROP INDEX IF EXISTS voters_2022_gen_party_idx;"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-    sql = "CREATE INDEX IF NOT EXISTS voters_2022_gen_party_idx"
-    sql += " ON voters_2022_gen USING btree"
-    sql += " (party ASC NULLS LAST)"
-    sql += ";"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-
-    sql = "DROP INDEX IF EXISTS voters_2022_gen_house_idx;"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-    sql = "CREATE INDEX IF NOT EXISTS voters_2022_gen_house_idx"
-    sql += " ON voters_2022_gen USING btree"
-    sql += " (house ASC NULLS LAST)"
-    sql += ";"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-
-    sql = "DROP INDEX IF EXISTS voters_2022_gen_senate_idx;"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
-    sql = "CREATE INDEX IF NOT EXISTS voters_2022_gen_senate_idx"
-    sql += " ON voters_2022_gen USING btree"
-    sql += " (senate ASC NULLS LAST)"
-    sql += ";"
-    with conn.cursor() as cur:
-        print(sql)
-        cur.execute(sql)
-    # end with cursor
+    for colName in listIndexes :
+        try :
+            SQL.DropIndex(conn, table, colName)
+            SQL.CreateIndex(conn, table, colName)
+            conn.commit()
+        except Exception as error:
+            print("ERRROR creating INDEX: " + table+ "(" + colName + ")")
+            print(error)
+            conn.rollback()
+    # end for each index
 # end with connection
 print("****************************")
 print("Finished")

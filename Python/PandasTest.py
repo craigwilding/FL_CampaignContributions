@@ -32,49 +32,6 @@ def GetFirstColumn(fileNameIn, delim=COMMA) :
     return firstColumn
 # end GetFirstColumn
 
-def GetRowColumn(fileNameIn, rowNum, colNum, delim=COMMA) :
-    # this is used to test the results
-    testVal = ""
-    fileIn = open(fileNameIn, encoding='utf-8')
-    rowCount = 0
-    for line in fileIn :
-        rowCount += 1
-        if (rowNum != rowCount) :
-            continue
-
-        columns = line.replace(EOL,"").split(delim)
-        colCount = 0
-        for col in columns :
-            colCount += 1
-            if (colNum == colCount) :
-                testVal = col
-            # end if
-        # end for columns
-    # end for each line
-    fileIn.close()
-    del fileIn
-
-    return testVal
-# end GetRowColumn
-
-def PrintRowColumns(fileNameIn, delim=COMMA) :
-    # this is used to print the testresults
-    fileIn = open(fileNameIn, encoding='utf-8')
-    rowCount = 0
-    for line in fileIn :
-        rowCount += 1
-
-        columns = line.replace(EOL,"").split(delim)
-        colCount = 0
-        for col in columns :
-            colCount += 1
-            print("Row: " + str(rowCount) + " Col: " + str(colCount) + " value: " + str(col))
-        # end for columns
-    # end for each line
-    fileIn.close()
-    del fileIn
-
-# end GetRowColumn
 
 def TabFileTest(fileNameIn, delim=COMMA,headersIn=True) :
     fileNameOut = fileNameIn.replace(".", "_tabtest.")
@@ -98,53 +55,54 @@ fileNameIn = os.path.join(dirIn,  "TestBadChars.csv")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadChars_DBFile.csv")
 shutil.copy(fileNameIn, fileNameOut)
-PTX.removeNonAscii(fileNameOut, PTX.COMMA, False)
-test = GetRowColumn(fileNameOut, 1, 1)
+csvNoHead = PTX.PandasTransform(fileNameOut, delim=COMMA, headers=False)
+csvNoHead.removeNonAscii()
+test = csvNoHead.TestRowColumn( 1, 1)
 if ("Dj vu" == test) :
     print("Remove Ascii from CSV NO HEADER " + "SUCCESS")
 else :
     print("Remove Ascii from CSV NO HEADER " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvNoHead.PrintRowColumns()
 # end test
-PTX.addColumn(fileNameOut, "", "End1", headersIn=False)
-test = GetRowColumn(fileNameOut, 1, 3)
+csvNoHead.addColumn("", "End1")
+test = csvNoHead.TestRowColumn( 1, 3)
 if ("End1" == test) :
     print("Add Column to END, CSV NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to END, CSV NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvNoHead.PrintRowColumns()
 # end test
-PTX.addColumn(fileNameOut, "Colstart1", "start1", headersIn=False, colLocation=PTX.COL_BEGIN)
-test = GetRowColumn(fileNameOut, 1, 1)
+csvNoHead.addColumn("Colstart1", "start1", colLocation=PTX.COL_BEGIN)
+test = csvNoHead.TestRowColumn( 1, 1)
 if ("start1" == test) :
     print("Add Column to START, CSV NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to START, CSV NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA) 
+    csvNoHead.PrintRowColumns()
 # end test
-PTX.removeColumn(fileNameOut, "3", headers=False)
-test = GetRowColumn(fileNameOut, 1, 4)
+csvNoHead.removeColumn("3")
+test = csvNoHead.TestRowColumn( 1, 4)
 if ("" == test) :
     print("Remove Column from END, CSV NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from END, CSV NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvNoHead.PrintRowColumns()
 # end test
-PTX.removeColumn(fileNameOut, "0", headers=False)
-test = GetRowColumn(fileNameOut, 1, 1)
+csvNoHead.removeColumn("0")
+test = csvNoHead.TestRowColumn( 1, 1)
 if ("start1" != test) :
     print("Remove Column from START, CSV NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from START, CSV NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvNoHead.PrintRowColumns()
 # end test
-PTX.removeRows(fileNameOut, "1", "pipe", headers=False)
-test = GetRowColumn(fileNameOut, 3, 2)
+csvNoHead.removeRows("1", "pipe")
+test = csvNoHead.TestRowColumn( 3, 2)
 if ("pipe" != test) :
     print("Remove Row by ColValue, CSV NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Row by ColValue, CSV NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvNoHead.PrintRowColumns()
 # end test
 
 #################################################
@@ -154,90 +112,91 @@ fileNameIn = os.path.join(dirIn,  "TestBadCharsHeader.csv")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadCharsHeader_DBFile.csv")
 shutil.copy(fileNameIn, fileNameOut)
-PTX.removeNonAscii(fileNameOut, PTX.COMMA)
-test = GetRowColumn(fileNameOut, 1, 1)
+csvWithHead = PTX.PandasTransform(fileNameOut)
+csvWithHead.removeNonAscii()
+test = csvWithHead.TestRowColumn( 1, 1)
 if ("test" == test) :
     print("Remove Ascii, from CSV WITH HEADER, colName check " + "SUCCESS")
 else :
     print("Remove Ascii, from CSV WITH HEADER, colName check " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-test = GetRowColumn(fileNameOut, 2, 1)
+test = csvWithHead.TestRowColumn( 2, 1)
 if ("Dj vu" == test) :
     print("Remove Ascii, from CSV WITH HEADER, colValue check " + "SUCCESS")
 else :
     print("Remove Ascii, from CSV WITH HEADER, colValue check " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
 
-PTX.addColumn(fileNameOut, "ColEnd1", "End1")
-test = GetRowColumn(fileNameOut, 1, 3)
+csvWithHead.addColumn("ColEnd1", "End1")
+test = csvWithHead.TestRowColumn( 1, 3)
 if ("ColEnd1" == test) :
     print("Add Column to END, from CSV WITH HEADER, colName Test " + "SUCCESS")
 else :
     print("Add Column to END, from CSV WITH HEADER, colName Test " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-test = GetRowColumn(fileNameOut, 2, 3)
+test = csvWithHead.TestRowColumn( 2, 3)
 if ("End1" == test) :
     print("Add Column to END, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to END, CSV WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
 
-PTX.addColumn(fileNameOut, "Colstart1", "start1", PTX.COL_BEGIN)
-test = GetRowColumn(fileNameOut, 1, 1)
+csvWithHead.addColumn("Colstart1", "start1", PTX.COL_BEGIN)
+test = csvWithHead.TestRowColumn( 1, 1)
 if ("Colstart1" == test) :
     print("Add Column to START, CSV WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Add Column to START, CSV WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-test = GetRowColumn(fileNameOut, 2, 1)
+test = csvWithHead.TestRowColumn( 2, 1)
 if ("start1" == test) :
     print("Add Column to START, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to START, CSV WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA) 
+    csvWithHead.PrintRowColumns() 
 # end test
-PTX.removeColumn(fileNameOut, "ColEnd1")
-test = GetRowColumn(fileNameOut, 1, 4)
+csvWithHead.removeColumn("ColEnd1")
+test = csvWithHead.TestRowColumn( 1, 4)
 if ("" == test) :
     print("Remove Column from END, CSV WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Remove Column from END, CSV WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-test = GetRowColumn(fileNameOut, 2, 4)
+test = csvWithHead.TestRowColumn( 2, 4)
 if ("" == test) :
     print("Remove Column from END, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from END, CSV WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-PTX.removeColumn(fileNameOut, "Colstart1")
-test = GetRowColumn(fileNameOut, 1, 1)
+csvWithHead.removeColumn("Colstart1")
+test = csvWithHead.TestRowColumn( 1, 1)
 if ("Colstart1" != test) :
     print("Remove Column from START, CSV WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Remove Column from START, CSV WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-test = GetRowColumn(fileNameOut, 2, 1)
+test = csvWithHead.TestRowColumn( 2, 1)
 if ("start1" != test) :
     print("Remove Column from START, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from START, CSV WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
-PTX.removeRows(fileNameOut, "desc", "pipe")
-test = GetRowColumn(fileNameOut, 4, 2)
+csvWithHead.removeRows("desc", "pipe")
+test = csvWithHead.TestRowColumn( 4, 2)
 if ("pipe" != test) :
     print("Remove Row by ColValue, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Row by ColValue, CSV WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=COMMA)
+    csvWithHead.PrintRowColumns()
 # end test
 #################################################
 # TAB file, has non-ascii characters, no header
@@ -246,53 +205,54 @@ fileNameIn = os.path.join(dirIn,  "TestBadChars.txt")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadChars_DBFile.txt")
 shutil.copy(fileNameIn, fileNameOut)
-PTX.removeNonAscii(fileNameOut, TAB, False)
-test = GetRowColumn(fileNameOut, 1, 1, delim=TAB)
+tabNoHead = PTX.PandasTransform(fileNameOut, delim=TAB, headers=False)
+tabNoHead.removeNonAscii()
+test = tabNoHead.TestRowColumn( 1, 1)
 if ("Dj vu" == test) :
     print("Remove Ascii from TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Ascii from TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabNoHead.PrintRowColumns() 
 # end test
-PTX.addColumn(fileNameOut, "", "End1", headersIn=False, delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 3, delim=TAB)
+tabNoHead.addColumn("", "End1")
+test = tabNoHead.TestRowColumn( 1, 3)
 if (test.startswith("End1")) :
     print("Add Column to END, TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to END, TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabNoHead.PrintRowColumns() 
 # end test
-PTX.addColumn(fileNameOut, "Colstart1", "start1", headersIn=False, delim=TAB, colLocation=PTX.COL_BEGIN)
-test = GetRowColumn(fileNameOut, 1, 1, delim=TAB)
+tabNoHead.addColumn("Colstart1", "start1", colLocation=PTX.COL_BEGIN)
+test = tabNoHead.TestRowColumn( 1, 1)
 if ("start1" == test) :
     print("Add Column to START, TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to START, TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabNoHead.PrintRowColumns() 
 # end test
-PTX.removeColumn(fileNameOut, "3", headers=False, delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 4)
+tabNoHead.removeColumn("3")
+test = tabNoHead.TestRowColumn( 1, 4)
 if ("" == test) :
     print("Remove Column from END, TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from END, TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabNoHead.PrintRowColumns() 
 # end test
-PTX.removeColumn(fileNameOut, "0", headers=False, delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 1)
+tabNoHead.removeColumn("0")
+test = tabNoHead.TestRowColumn( 1, 1)
 if ("start1" != test) :
     print("Remove Column from START, TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from START, TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabNoHead.PrintRowColumns() 
 # end test
-PTX.removeRows(fileNameOut, "1", "pipe", headers=False, delim=TAB)
-test = GetRowColumn(fileNameOut, 3, 2, delim=TAB)
+tabNoHead.removeRows("1", "pipe")
+test = tabNoHead.TestRowColumn( 3, 2)
 if ("pipe" != test) :
     print("Remove Row by ColValue, TAB NO HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Row by ColValue, TAB NO HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabNoHead.PrintRowColumns() 
 # end test
 #################################################
 # TAB file, has non-ascii characters, with header
@@ -301,88 +261,89 @@ fileNameIn = os.path.join(dirIn,  "TestBadCharsHeader.txt")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadCharsHeader_DBFile.txt")
 shutil.copy(fileNameIn, fileNameOut)
-PTX.removeNonAscii(fileNameOut, delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 1,delim=TAB)
+tabWithHead = PTX.PandasTransform(fileNameOut, delim=TAB)
+tabWithHead.removeNonAscii()
+test = tabWithHead.TestRowColumn( 1, 1)
 if ("test" == test) :
     print("Remove Ascii, TAB WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Remove Ascii, TAB WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns() 
 # end test
-test = GetRowColumn(fileNameOut, 2, 1,delim=TAB)
+test = tabWithHead.TestRowColumn( 2, 1)
 if ("Dj vu" == test) :
     print("Remove Ascii, from TAB WITH HEADER, colValue check " + "SUCCESS")
 else :
     print("Remove Ascii, from TAB WITH HEADER, colValue check " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns() 
 # end test
 
-PTX.addColumn(fileNameOut, "ColEnd1", "End1",delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 3,delim=TAB)
+tabWithHead.addColumn("ColEnd1", "End1")
+test = tabWithHead.TestRowColumn( 1, 3)
 if ("ColEnd1" == test) :
     print("Add Column to END, TAB WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Add Column to END,  TAB WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns()  
 # end test
-test = GetRowColumn(fileNameOut, 2, 3,delim=TAB)
+test = tabWithHead.TestRowColumn( 2, 3)
 if ("End1" == test) :
     print("Add Column to END, TAB WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to END, TAB WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns() 
 # end test
 
-PTX.addColumn(fileNameOut, "Colstart1", "start1", colLocation=PTX.COL_BEGIN, delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 1,delim=TAB)
+tabWithHead.addColumn("Colstart1", "start1", colLocation=PTX.COL_BEGIN)
+test = tabWithHead.TestRowColumn( 1, 1)
 if ("Colstart1" == test) :
     print("Add Column to START, TAB WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Add Column to START,  TAB WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns() 
 # end test
-test = GetRowColumn(fileNameOut, 2, 1,delim=TAB)
+test = tabWithHead.TestRowColumn( 2, 1)
 if ("start1" == test) :
     print("Add Column to START, TAB WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Add Column to START, TAB WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB) 
+    tabWithHead.PrintRowColumns() 
 # end test
-PTX.removeColumn(fileNameOut, "ColEnd1", delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 4, delim=TAB)
+tabWithHead.removeColumn("ColEnd1")
+test = tabWithHead.TestRowColumn( 1, 4)
 if ("" == test) :
     print("Remove Column from END, TAB WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Remove Column from END, TAB WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabWithHead.PrintRowColumns() 
 # end test
-test = GetRowColumn(fileNameOut, 2, 4, delim=TAB)
+test = tabWithHead.TestRowColumn( 2, 4)
 if ("" == test) :
     print("Remove Column from END, TAB WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from END, TAB WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabWithHead.PrintRowColumns() 
 # end test
-PTX.removeColumn(fileNameOut, "Colstart1", delim=TAB)
-test = GetRowColumn(fileNameOut, 1, 1, delim=TAB)
+tabWithHead.removeColumn("Colstart1")
+test = tabWithHead.TestRowColumn( 1, 1)
 if ("Colstart1" != test) :
     print("Remove Column from START, TAB WITH HEADER, colNameTest " + "SUCCESS")
 else :
     print("Remove Column from START, TAB WITH HEADER, colNameTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabWithHead.PrintRowColumns() 
 # end test
-test = GetRowColumn(fileNameOut, 2, 1, delim=TAB)
+test = tabWithHead.TestRowColumn( 2, 1)
 if ("start1" != test) :
     print("Remove Column from START, TAB WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Column from START, TAB WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabWithHead.PrintRowColumns() 
 # end test
-PTX.removeRows(fileNameOut, "desc", "pipe", delim=TAB)
-test = GetRowColumn(fileNameOut, 4, 2, delim=TAB)
+tabWithHead.removeRows("desc", "pipe")
+test = tabWithHead.TestRowColumn( 4, 2)
 if ("pipe" != test) :
     print("Remove Row by ColValue, TAB WITH HEADER, colValueTest " + "SUCCESS")
 else :
     print("Remove Row by ColValue, TAB WITH HEADER, colValueTest " + "FAIL")
-    PrintRowColumns(fileNameOut, delim=TAB)
+    tabWithHead.PrintRowColumns() 
 # end test

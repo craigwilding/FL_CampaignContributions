@@ -186,6 +186,69 @@ class PandasTransform :
         shutil.move(fileNameOut, self.fileNameIn)
     # end removeRows
 
+    ############################################
+    # Rename Column 
+    # Rename a column from the file
+    # The column(s) to be changed must be passed in as a dictionary
+    # dictRenameColumns - (key = oldName, value = new name)
+    ############################################
+    def renameColumn(self, dictRenameColumns) :
+
+        headerVal=0
+        if (self.headers != True) :
+            return  # skip if no column headers to rename!!!
+        # end headerVal
+
+        fileNameOut = self.fileNameIn.replace(".", "_renameColumn.")
+
+        # Read as pandas data frame
+        df = pandas.read_csv(self.fileNameIn,sep=self.delim,header=headerVal,index_col=False)
+            
+        #check if has column exists already
+        df.rename(columns=dictRenameColumns, inplace=True)
+
+        # write to temp file
+        df.to_csv(fileNameOut, encoding='utf-8', index=False, header=self.headers, sep=self.delim)
+        # replace in File with temp file
+        shutil.move(fileNameOut, self.fileNameIn)
+    # end renameColumn
+
+    ############################################
+    # SetNullValues() 
+    # Set all missing values on a column to a given value
+    # Params 
+    # listColumns - a list of columns to check for null values
+    # nullValue - the value to set the columns to.
+    #
+    # Notes:  This can be used in multiple ways:
+    # + Set all integer or float files to 0 instead of blank
+    # + Set 'NULL' as the common null value, then use that in the DB Load command NULL as 'NULL'
+    ############################################
+
+    def setNullValues(self, listColumns, nullValue="") :
+
+        headerVal=0
+        if (self.headers != True) :
+            headerVal = None
+        # end headerVal
+        fileNameOut = self.fileNameIn.replace(".", "_setnull" + ".")
+
+        # Read as pandas data frame
+        df = pandas.read_csv(self.fileNameIn,sep=self.delim,header=headerVal,index_col=False)
+            
+        #check if has column headers already
+        for colName in listColumns :
+
+            df[colName].fillna(nullValue, inplace=True)
+        # end for
+
+        # write to temp file
+        df.to_csv(fileNameOut, encoding='utf-8', index=False, header=self.headers, sep=self.delim)
+        # replace in File with temp file
+        shutil.move(fileNameOut, self.fileNameIn)
+    # end SetNullValuesAsInt
+
+
     def TestRowColumn(self, rowNum, colNum) :
         # this is used to test the results
         # it counts the header as a row number if there is one.

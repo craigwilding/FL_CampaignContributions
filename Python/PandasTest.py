@@ -15,6 +15,13 @@ dirOut = os.path.join(dirIn,  "DBFiles")
 if not os.path.exists(dirOut):
     os.makedirs(dirOut)
 
+dictRenameColumns = {
+    "desc": "description"
+}
+listNullIntColHeader = ["test"]
+listNullIntColIndex = [0]
+listNullStrColHeader = ["desc"]
+listNullStrColIndex = [1]
 
 def GetFirstColumn(fileNameIn, delim=COMMA) :
     # this is used to test the results
@@ -51,6 +58,7 @@ def TabFileTest(fileNameIn, delim=COMMA,headersIn=True) :
 #################################################
 # CSV file, has non-ascii characters, No header
 #################################################
+print("**************** CSV NO HEADER *******************")
 fileNameIn = os.path.join(dirIn,  "TestBadChars.csv")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadChars_DBFile.csv")
@@ -62,6 +70,23 @@ if ("Dj vu" == test) :
     print("Remove Ascii from CSV NO HEADER " + "SUCCESS")
 else :
     print("Remove Ascii from CSV NO HEADER " + "FAIL")
+    csvNoHead.PrintRowColumns()
+# end test
+csvNoHead.setNullValues(listNullIntColIndex,"0")
+test = csvNoHead.TestRowColumn( 5, 1)
+if ("0" == test) :
+    print("Set Null Int, CSV NO HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Int, CSV NO HEADER, colValueTest " + "FAIL")
+    print("test = [" + test + "]")
+    csvNoHead.PrintRowColumns()
+# end test
+csvNoHead.setNullValues(listNullStrColIndex, "NULL")
+test = csvNoHead.TestRowColumn( 6, 2)
+if ("NULL" == test) :
+    print("Set Null Str, CSV NO HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Str, CSV NO HEADER, colValueTest " + "FAIL")
     csvNoHead.PrintRowColumns()
 # end test
 csvNoHead.addColumn("", "End1")
@@ -105,9 +130,11 @@ else :
     csvNoHead.PrintRowColumns()
 # end test
 
+
 #################################################
 # CSV file, has non-ascii characters, With header
 #################################################
+print("**************** CSV WITH HEADER *******************")
 fileNameIn = os.path.join(dirIn,  "TestBadCharsHeader.csv")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadCharsHeader_DBFile.csv")
@@ -128,7 +155,22 @@ else :
     print("Remove Ascii, from CSV WITH HEADER, colValue check " + "FAIL")
     csvWithHead.PrintRowColumns()
 # end test
-
+csvWithHead.setNullValues(listNullIntColHeader, "0")
+test = csvWithHead.TestRowColumn( 6, 1)
+if ("0" == test) :
+    print("Set Null Int, CSV WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Int, CSV WITH HEADER, colValueTest " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
+csvWithHead.setNullValues(listNullStrColHeader, "NULL")
+test = csvWithHead.TestRowColumn( 7, 2)
+if ("NULL" == test) :
+    print("Set Null Str, CSV WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Str, CSV WITH HEADER, colValueTest " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
 csvWithHead.addColumn("ColEnd1", "End1")
 test = csvWithHead.TestRowColumn( 1, 3)
 if ("ColEnd1" == test) :
@@ -144,7 +186,6 @@ else :
     print("Add Column to END, CSV WITH HEADER, colValueTest " + "FAIL")
     csvWithHead.PrintRowColumns()
 # end test
-
 csvWithHead.addColumn("Colstart1", "start1", PTX.COL_BEGIN)
 test = csvWithHead.TestRowColumn( 1, 1)
 if ("Colstart1" == test) :
@@ -190,17 +231,18 @@ else :
     print("Remove Column from START, CSV WITH HEADER, colValueTest " + "FAIL")
     csvWithHead.PrintRowColumns()
 # end test
-csvWithHead.removeRows("desc", "pipe")
-test = csvWithHead.TestRowColumn( 4, 2)
-if ("pipe" != test) :
-    print("Remove Row by ColValue, CSV WITH HEADER, colValueTest " + "SUCCESS")
+csvWithHead.renameColumn(dictRenameColumns)
+test = csvWithHead.TestRowColumn( 1, 2)
+if ("description" == test) :
+    print("Rename Column, CSV WITH HEADER, colValueTest " + "SUCCESS")
 else :
-    print("Remove Row by ColValue, CSV WITH HEADER, colValueTest " + "FAIL")
+    print("Rename Column, CSV WITH HEADER, colValueTest " + "FAIL")
     csvWithHead.PrintRowColumns()
 # end test
 #################################################
 # TAB file, has non-ascii characters, no header
 #################################################
+print("**************** TAB NO HEADER *******************")
 fileNameIn = os.path.join(dirIn,  "TestBadChars.txt")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadChars_DBFile.txt")
@@ -213,6 +255,22 @@ if ("Dj vu" == test) :
 else :
     print("Remove Ascii from TAB NO HEADER, colValueTest " + "FAIL")
     tabNoHead.PrintRowColumns() 
+# end test
+tabNoHead.setNullValues(listNullIntColIndex, "0")
+test = tabNoHead.TestRowColumn( 5, 1)
+if ("0" == test) :
+    print("Set Null Int, TAB NO HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Int, TAB NO HEADER, colValueTest " + "FAIL")
+    tabNoHead.PrintRowColumns()
+# end test
+tabNoHead.setNullValues(listNullStrColIndex, "NULL")
+test = tabNoHead.TestRowColumn( 6, 2)
+if ("NULL" == test) :
+    print("Set Null Str, TAB NO HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Str, TAB NO HEADER, colValueTest " + "FAIL")
+    tabNoHead.PrintRowColumns()
 # end test
 tabNoHead.addColumn("", "End1")
 test = tabNoHead.TestRowColumn( 1, 3)
@@ -254,9 +312,11 @@ else :
     print("Remove Row by ColValue, TAB NO HEADER, colValueTest " + "FAIL")
     tabNoHead.PrintRowColumns() 
 # end test
+
 #################################################
 # TAB file, has non-ascii characters, with header
 #################################################
+print("**************** TAB WITH HEADER *******************")
 fileNameIn = os.path.join(dirIn,  "TestBadCharsHeader.txt")
 # copy to DBFile
 fileNameOut = os.path.join(dirOut,  "TestBadCharsHeader_DBFile.txt")
@@ -277,7 +337,22 @@ else :
     print("Remove Ascii, from TAB WITH HEADER, colValue check " + "FAIL")
     tabWithHead.PrintRowColumns() 
 # end test
-
+tabWithHead.setNullValues(listNullIntColHeader,"0")
+test = tabWithHead.TestRowColumn( 6, 1)
+if ("0" == test) :
+    print("Set Null Int, TAB WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Int, TAB WITH HEADER, colValueTest " + "FAIL")
+    tabWithHead.PrintRowColumns()
+# end test
+tabWithHead.setNullValues(listNullStrColHeader, "NULL")
+test = tabWithHead.TestRowColumn( 7, 2)
+if ("NULL" == test) :
+    print("Set Null Str, TAB WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Str, TAB WITH HEADER, colValueTest " + "FAIL")
+    tabWithHead.PrintRowColumns()
+# end test
 tabWithHead.addColumn("ColEnd1", "End1")
 test = tabWithHead.TestRowColumn( 1, 3)
 if ("ColEnd1" == test) :
@@ -346,4 +421,12 @@ if ("pipe" != test) :
 else :
     print("Remove Row by ColValue, TAB WITH HEADER, colValueTest " + "FAIL")
     tabWithHead.PrintRowColumns() 
+# end test
+tabWithHead.renameColumn(dictRenameColumns)
+test = tabWithHead.TestRowColumn( 1, 2)
+if ("description" == test) :
+    print("Rename Column, TAB WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Rename Column, TAB WITH HEADER, colValueTest " + "FAIL")
+    tabWithHead.PrintRowColumns()
 # end test

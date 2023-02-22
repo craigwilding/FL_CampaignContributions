@@ -1,4 +1,7 @@
-test,desc
+test,description
 Dj vu,french
 lea,spanish
+|zz,pipe
 test 123,norm
+0,emptyVal
+emptyDesc,

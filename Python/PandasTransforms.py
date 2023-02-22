@@ -13,9 +13,12 @@ EOL = '\n'
 COMMA = ','
 QUOTE = '"'
 SINGLE_QUOTE = "'"
+BIN_START = "b'"
 # indicates whether to add a column to beginning or end
 COL_BEGIN = 0
 COL_END = -1
+
+
 
 class PandasTransform :
     ###########################################################
@@ -62,6 +65,64 @@ class PandasTransform :
     # end removeNonAscii
 
     ############################################
+    # Remove Binary 
+    # Example:
+    # b'Candidate/Committee',b'Date',b'Amount'
+    # This replaces the fileNameIn with the converted file.
+    ############################################
+
+    def removeBinary(self) :
+        headerVal=0
+        if (self.headers != True) :
+            headerVal = None
+        # end headerVal
+        fileNameOut = self.fileNameIn.replace(".", "_remBinary.")
+
+        # try reading as iso-8859-1 to allow non-asciicharacters
+        df = pandas.read_csv(self.fileNameIn,delimiter=self.delim, header=headerVal)
+
+        if (self.headers == True) :
+            # convert headers
+            listColumns = list(df.columns)
+            dictRenameCols = {}
+            for colName in listColumns :
+                if (colName.startswith(BIN_START))  and (colName.endswith(SINGLE_QUOTE)):
+                    # print(value)
+                    newName = colName.replace(BIN_START, "")
+                    newName = newName[:len(newName)-1]
+                    dictRenameCols[colName] = newName
+                # end if binary characters
+            # end for column names
+
+            self.renameColumn(dictRenameCols)
+            del listColumns
+            del dictRenameCols
+
+            # re-read since renameColumn method writes back to the file.
+            df = pandas.read_csv(self.fileNameIn,delimiter=self.delim, header=headerVal)
+        # end if column headers
+
+        # convert values
+        for row, rowVal in df.iterrows():
+            for col in df.columns:
+                # convert non-english characters.
+                value = str(df.loc[row,col])
+                if (value.startswith(BIN_START))  and (value.endswith(SINGLE_QUOTE)):
+                    # print(value)
+                    value = value.replace(BIN_START, "")
+                    value = value[:len(value)-1]
+                    df.loc[row,col] = value
+                # end if binary characters
+            # end for columns
+        # end for row
+
+        # write to temp file
+        df.to_csv(fileNameOut, encoding='utf-8', index=False, sep=self.delim, header=self.headers)
+        # replace in File with temp file
+        shutil.move(fileNameOut, self.fileNameIn)
+    # end removeBinary
+
+    ############################################
     # Add Column 
     # Add a column to the file
     # This replaces the fileNameIn with the converted file.
@@ -79,8 +140,8 @@ class PandasTransform :
         df = pandas.read_csv(self.fileNameIn,sep=self.delim,header=headerVal,index_col=False)
             
         #check if has column headers already
-        topline = str(df.head(1))
-        if (topline.find(newColName) < 0) or (self.headers == False) :
+        listColNames = list(df.columns)
+        if (newColName not in listColNames) or (self.headers == False) :
 
             # add the column with default value.
             if (self.headers == True) :
@@ -98,11 +159,15 @@ class PandasTransform :
         else :
             print("column already exists: " + newColName)
         # end if office
+        
 
         # write to temp file
         df.to_csv(fileNameOut, encoding='utf-8', index=False, header=self.headers, sep=self.delim)
         # replace in File with temp file
         shutil.move(fileNameOut, self.fileNameIn)
+
+        del listColNames
+        del df
     # end addColumn
 
     ############################################
@@ -124,8 +189,8 @@ class PandasTransform :
         df = pandas.read_csv(self.fileNameIn,sep=self.delim,header=headerVal,index_col=False)
             
         #check if has column exists already
-        topline = str(df.head(1))
-        if ((topline.find(colName) > 0) or (self.headers == False)) :
+        listColNames = list(df.columns)
+        if (colName in listColNames) or (self.headers == False) :
 
             # Remove the column
             if (self.headers == True) :
@@ -136,12 +201,16 @@ class PandasTransform :
             # end if header
         else :
             print("column did not exists: " + colName)
+            print(listColNames)
         # end if office
 
         # write to temp file
         df.to_csv(fileNameOut, encoding='utf-8', index=False, header=self.headers, sep=self.delim)
         # replace in File with temp file
         shutil.move(fileNameOut, self.fileNameIn)
+
+        del listColNames
+        del df
     # end removeColumn
 
     ############################################
@@ -163,8 +232,8 @@ class PandasTransform :
         df = pandas.read_csv(self.fileNameIn,sep=self.delim,header=headerVal,index_col=False)
             
         #check if has column exists already
-        topline = str(df.head(1))
-        if ((topline.find(colName) > 0) or (self.headers == False)) :
+        listColNames = list(df.columns)
+        if (colName  in listColNames) or (self.headers == False) :
 
             listValues = []
             listValues.append(colValue)
@@ -176,6 +245,7 @@ class PandasTransform :
                 ix = int(colName)   
                 df = df[~df[ix].isin(listValues)]
             # end if header
+            del listValues
         else :
             print("column did not exists: " + colName)
         # end if office
@@ -184,6 +254,9 @@ class PandasTransform :
         df.to_csv(fileNameOut, encoding='utf-8', index=False, header=self.headers, sep=self.delim)
         # replace in File with temp file
         shutil.move(fileNameOut, self.fileNameIn)
+
+        del listColNames
+        del df
     # end removeRows
 
     ############################################

@@ -175,10 +175,13 @@ dirOut = "/workspaces/vscode-remote-try-python/Results/State Races"
 if not os.path.exists(dirOut) :
     os.mkdir(dirOut)
 
-dirHDContrib = os.path.join(wrksp, "2022HD")
+dirDBFiles = "/workspaces/vscode-remote-try-python/DATA/State Races/DBFiles"
+
+
+dirHDContrib = os.path.join(dirDBFiles, "2022HD")
 fileNameOut = os.path.join(dirOut, "2022HD_Contrib_byDistrict.csv")
 CountContributions(dirHDContrib, fileNameOut)
 
-dirSDContrib = os.path.join(wrksp, "2022SD")
+dirSDContrib = os.path.join(dirDBFiles, "2022SD")
 fileNameOut = os.path.join(dirOut, "2022SD_Contrib_byDistrict.csv")
 CountContributions(dirSDContrib, fileNameOut)   

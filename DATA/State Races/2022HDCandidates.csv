@@ -29,7 +29,7 @@ District,LastName,FirstName,Party,Status,Primary,General,MatchType
 21,Merton,Hollye,REP,Defeated,Unopposed,Eliminated,Starts
 22,Clemons,Chuck,REP,Elected,Won,Won,Starts
 22,Peters,Brandon,DEM,Defeated,Won,Eliminated,Starts
-23,Massullo�Jr,Ralph E.,REP,Elected,Won,Unopposed,Starts
+23,Massullo Jr,Ralph E.,REP,Elected,Won,Unopposed,Starts
 24,Harding,Joe,REP,Elected,Unopposed,Unopposed,Starts
 25,Yarkosky,Taylor,REP,Elected,Won,Won,Starts
 26,Kero,Linda,DEM,Defeated,Unopposed,Eliminated,Starts
@@ -107,7 +107,7 @@ District,LastName,FirstName,Party,Status,Primary,General,MatchType
 69,Alvarez,"Daniel ""Danny""",REP,Elected,Won,Won,Starts
 69,Learned,Andrew,DEM,Defeated,Unopposed,Eliminated,Starts
 70,Beltran,Mike,REP,Elected,Unopposed,Won,Starts
-70,Salazar�Jr,"Eleuterio ""Junior""",DEM,Defeated,Unopposed,Eliminated,Starts
+70,Salazar Jr,"Eleuterio ""Junior""",DEM,Defeated,Unopposed,Eliminated,Starts
 71,Robinson,Will,REP,Elected,Unopposed,Unopposed,Starts
 72,Dameus,Roberts Guy,DEM,Defeated,Unopposed,Eliminated,Starts
 72,Gregory,Tommy,REP,Elected,Unopposed,Won,Starts
@@ -185,4 +185,4 @@ District,LastName,FirstName,Party,Status,Primary,General,MatchType
 119,Gonzalez,Gabriel,DEM,Defeated,Won,Eliminated,Starts
 119,Porras,Juan Carlos,REP,Elected,Won,Won,Starts
 120,Gentle,Adam,DEM,Defeated,Won,Eliminated,Starts
-120,Mooney�Jr,"James ""Jim"" V.",REP,Elected,Won,Won,Starts
+120,Mooney Jr,"James ""Jim"" V.",REP,Elected,Won,Won,Starts

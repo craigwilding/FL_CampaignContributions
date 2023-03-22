@@ -1,1 +1,1 @@
-Candidate/Committee,Date,Amount,Typ,Contributor Name,City State Zip,Occupation,Inkind Desc
+cand_id,cand_lastname,cand_firstname,date,amount,contrib_type,contributor,occupation,inkind_desc,city_sate_zip.1,donortype,donorindex

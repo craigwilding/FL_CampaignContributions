@@ -53,6 +53,31 @@ def CreateIndex(connection, table, columnName) :
 ######################################
 
 ######################################
+# Update Where
+# columns:
+# list of tuples, tuple = (name, value, colType) 
+# Use where clause to select rows to be deleted
+######################################
+def UpdateWhere(connection, table, columns, whereSql="") :
+    sql = "UPDATE " + table 
+    # SET temp_lo = temp_lo+1, temp_hi = temp_lo+15, prcp = DEFAULT
+    sql += " SET "
+    for col in columns :
+        (name, value, colType) = col
+        sql += name + " = "
+        if (colType != "int") :
+            sql += "'" + value + "'"
+        else :
+            sql += value
+        # end if
+        sql += ","
+    # end for columns
+    sql = sql[:-1] # remove last ,
+    sql += " " + whereSql
+    Exec(connection, sql)
+# end UpdateWhere
+
+######################################
 # Delete Where
 # Use to delete old rows before loading new ones
 # Use where clause to select rows to be deleted
@@ -176,3 +201,23 @@ def SelectCountWhere(connection, table, whereSql="") :
         print("FOUND " + str(recordCount[0]) + " ROWS in " + table)
     # end with cursor             
 # end SelectCountWhere
+
+
+######################################
+# SELECT id
+# WHERE
+# Return the id that matches the criteria
+######################################
+def SelectIdWhere(connection, table, whereSql="") :
+    id = ""
+    sql = "SELECT id FROM " + table
+    sql += " " + whereSql
+    with connection.cursor() as cursor:
+        print(sql)
+        cursor.execute(sql)
+        recordCount = cursor.fetchone()
+        id = str(recordCount[0])
+        print("FOUND ID: " + str(recordCount[0]) + " in " + table)
+    # end with cursor 
+    return id          
+# end SelectIdWhere

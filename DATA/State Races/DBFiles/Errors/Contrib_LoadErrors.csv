@@ -1,0 +1,79 @@
+fileName,error
+HD61_DEM_Janet_Varnell-Warwick_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 278, column state: ""FL, FL""
+"
+HD62_REP_Jeremy-M_Brown_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 331, column state: ""VC, V4N 272, CANADA, XC""
+"
+HD54_DEM_Brian_Staver_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 80, column state: ""FL, FL""
+"
+HD17_REP_Jessica_Baker_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 305, column state: ""JOHNS, FL""
+"
+HD110_REP_Tom_Fabricio_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 146, column state: ""FL, FL""
+"
+HD39_DEM_Tiffany_Hughes_contrib_DBFile.csv,"invalid input syntax for type date: ""          ""
+CONTEXT:  COPY contributions, line 2, column date: ""          ""
+"
+HD117_DEM_Kevin_Chambliss_contrib_DBFile.csv,"invalid input syntax for type date: ""          ""
+CONTEXT:  COPY contributions, line 2, column date: ""          ""
+"
+HD90_DEM_Joseph-Joe_Casello_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 34, column state: ""FL 33172, FL""
+"
+HD72_REP_Tommy_Gregory_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 40, column state: ""FL, FL""
+"
+HD46_DEM_Kristen_Arrington_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 53, column state: ""PR, XC""
+"
+HD88_DEM_Jervonte-Tae_Edmonds_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 94, column state: ""FL, FL""
+"
+HD45_REP_Carolina_Amesty_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 358, column state: ""CA, CA""
+"
+HD1_DEM_Franscine-C_Mathis_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 12, column state: ""ST, FL""
+"
+HD5_REP_Shane_Abbott_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 416, column state: ""DEFUNIAK SPGS, FL""
+"
+HD22_REP_Chuck_Clemons_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 124, column state: ""FL, FL""
+"
+HD103_REP_George_Navarini_contrib_DBFile.csv,"invalid input syntax for type date: ""          ""
+CONTEXT:  COPY contributions, line 2, column date: ""          ""
+"
+HD28_REP_Tom_Leek_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 187, column state: ""FL, FL""
+"
+HD115_REP_Alina_Garcia_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 75, column state: ""PR, XC""
+"
+HD39_REP_Doug_Bankson_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 94, column state: ""DORA, FL""
+"
+HD100_REP_Chip_LaMarca_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 683, column state: ""FL, FL""
+"
+HD59_REP_Berny_Jacques_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 493, column state: ""PETERSBURG, FL""
+"
+HD67_DEM_Fentrice_Driskell_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 217, column state: ""FL, FL""
+"
+HD94_DEM_Terence_Davis_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 41, column state: ""FL, FL""
+"
+HD73_DEM_Derek_Reich_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 257, column state: ""FL, FL""
+"
+HD84_DEM_Forest-W_Blanton_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 76, column state: ""MA 01060, MA""
+"
+HD24_REP_Joe_Harding_contrib_DBFile.csv,"value too long for type character(5)
+CONTEXT:  COPY contributions, line 2, column state: ""FL, FL""
+"

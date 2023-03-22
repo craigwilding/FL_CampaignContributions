@@ -1,4 +1,4 @@
-Candidate/Committee,Date,Amount,Typ,Contributor Name,City State Zip,Occupation,Inkind Desc
-"Silla, Guy  (REP)(STR)",09/13/2022,500.0,INK,BROWARD REPUBLICAN EXECUTIVE COMMITTEE,"LAUDERDALE BY THE SEA, FL 33308",,SIGNS
-"Silla, Guy  (REP)(STR)",08/29/2022,20000.0,LOA,SILLA GUY,"HOLLYWOOD, FL 33020",,
-"Silla, Guy  (REP)(STR)",06/10/2022,4000.0,CHE,SILLA GUY,"HOLLYWOOD, FL 33020",,
+cand_id,cand_lastname,cand_firstname,date,amount,contrib_type,contributor,occupation,inkind_desc,city,state,zipcode,donortype,donorindex
+1595,Silla,Guy,09/13/2022,500.0,INK,BROWARD REPUBLICAN EXECUTIVE COMMITTEE,,SIGNS,LAUDERDALE BY THE SEA,FL,33308,IND,0
+1595,Silla,Guy,08/29/2022,20000.0,LOA,SILLA GUY,,,HOLLYWOOD,FL,33020,IND,0
+1595,Silla,Guy,06/10/2022,4000.0,CHE,SILLA GUY,,,HOLLYWOOD,FL,33020,IND,0

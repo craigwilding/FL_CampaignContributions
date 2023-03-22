@@ -21,6 +21,8 @@ TAB = "\t"
 EOL = '\n'
 SINGLE_QT = "'"
 SQL_END = ";"
+
+listErrors = []
         
 def loadCandidates(fileNameIn, year, office) :
     with SQL.Connect() as conn:
@@ -40,6 +42,7 @@ def loadCandidates(fileNameIn, year, office) :
         except Exception as error:
             print ("ERRROR LOADING: " + fileNameIn)
             print(error)
+            listErrors.append(error)
             conn.rollback()
         # end try
     # end with connection
@@ -55,3 +58,5 @@ loadCandidates(fileNameIn, "2022", "STR")
 fileName = "2022SDCandidates_DBFile.csv"
 fileNameIn = os.path.join(dirIn, fileName)
 loadCandidates(fileNameIn, "2022", "STS") 
+
+print(listErrors)

@@ -72,6 +72,9 @@ else :
     print("Remove Ascii from CSV NO HEADER " + "FAIL")
     csvNoHead.PrintRowColumns()
 # end test
+
+
+
 csvNoHead.setNullValues(listNullIntColIndex,"0")
 test = csvNoHead.TestRowColumn( 5, 1)
 if ("0" == test) :
@@ -82,6 +85,7 @@ else :
     csvNoHead.PrintRowColumns()
 # end test
 csvNoHead.setNullValues(listNullStrColIndex, "NULL")
+
 test = csvNoHead.TestRowColumn( 6, 2)
 if ("NULL" == test) :
     print("Set Null Str, CSV NO HEADER, colValueTest " + "SUCCESS")
@@ -89,6 +93,7 @@ else :
     print("Set Null Str, CSV NO HEADER, colValueTest " + "FAIL")
     csvNoHead.PrintRowColumns()
 # end test
+
 csvNoHead.addColumn("", "End1")
 test = csvNoHead.TestRowColumn( 1, 3)
 if ("End1" == test) :
@@ -105,6 +110,7 @@ else :
     print("Add Column to START, CSV NO HEADER, colValueTest " + "FAIL")
     csvNoHead.PrintRowColumns()
 # end test
+
 csvNoHead.removeColumn("3")
 test = csvNoHead.TestRowColumn( 1, 4)
 if ("" == test) :
@@ -121,6 +127,7 @@ else :
     print("Remove Column from START, CSV NO HEADER, colValueTest " + "FAIL")
     csvNoHead.PrintRowColumns()
 # end test
+
 csvNoHead.removeRows("1", "pipe")
 test = csvNoHead.TestRowColumn( 3, 2)
 if ("pipe" != test) :
@@ -239,6 +246,8 @@ else :
     print("Rename Column, CSV WITH HEADER, colValueTest " + "FAIL")
     csvWithHead.PrintRowColumns()
 # end test
+
+
 #################################################
 # TAB file, has non-ascii characters, no header
 #################################################
@@ -430,3 +439,49 @@ else :
     print("Rename Column, TAB WITH HEADER, colValueTest " + "FAIL")
     tabWithHead.PrintRowColumns()
 # end test
+
+
+#################################################
+# CSV file, With header, multi changes
+#################################################
+print("**************** CSV WITH HEADER *******************")
+fileNameIn = os.path.join(dirIn,  "TestBadCharsHeader.csv")
+# copy to DBFile
+fileNameOut = os.path.join(dirOut,  "TestBadCharsHeader_DBFile.csv")
+shutil.copy(fileNameIn, fileNameOut)
+csvWithHead = PTX.PandasTransform(fileNameOut)
+csvWithHead.removeNonAscii()
+csvWithHead.setNullValues(listNullIntColHeader, "0")
+csvWithHead.setNullValues(listNullStrColHeader, "NULL")
+
+test = csvWithHead.TestRowColumn( 1, 1)
+if ("test" == test) :
+    print("Remove Ascii, from CSV WITH HEADER, colName check " + "SUCCESS")
+else :
+    print("Remove Ascii, from CSV WITH HEADER, colName check " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
+test = csvWithHead.TestRowColumn( 2, 1)
+if ("Dj vu" == test) :
+    print("Remove Ascii, from CSV WITH HEADER, colValue check " + "SUCCESS")
+else :
+    print("Remove Ascii, from CSV WITH HEADER, colValue check " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
+
+test = csvWithHead.TestRowColumn( 6, 1)
+if ("0" == test) :
+    print("Set Null Int, CSV WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Int, CSV WITH HEADER, colValueTest " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
+
+test = csvWithHead.TestRowColumn( 7, 2)
+if ("NULL" == test) :
+    print("Set Null Str, CSV WITH HEADER, colValueTest " + "SUCCESS")
+else :
+    print("Set Null Str, CSV WITH HEADER, colValueTest " + "FAIL")
+    csvWithHead.PrintRowColumns()
+# end test
+

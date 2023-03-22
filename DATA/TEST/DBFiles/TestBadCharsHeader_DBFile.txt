@@ -3,4 +3,4 @@ Dj vu	french
 lea	spanish
 test 123	norm
 0	emptyVal
-emptyDesc	
+emptyDesc	NULL

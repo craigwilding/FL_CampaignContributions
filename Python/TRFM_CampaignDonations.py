@@ -7,10 +7,10 @@ sys.path.insert(0, '/workspaces/vscode-remote-try-python/PostgreSQL')
 import SQLCommands as SQL
 
 ############################################
-# TRANSFORM Candidate data
+# TRANSFORM Candidate Campaign Donations
 # Perform any data transformations here before loading to database
-# fileNameIn =  2022HDCandidates.csv - Florida State House District Candidates
-#               2022SDCandidates.csv  - Florida State Senate District Candidates
+# fileNameIn =  DATA/State Races/2022HD - Florida State House District Candidate Contributions
+#               DATA/State Races/2022SD  - Florida State Senate District Candidate Contributions
 # dirOut = DBFiles   
 #    This creates a copy of the original into the DBFiles subfolder with a _DBFile.csv extension
 ############################################
@@ -45,6 +45,7 @@ def ContributionsTransforms(pandasTX) :
     pandasTX.removeColumn("city_sate_zip")
     pandasTX.addColumn("donortype", "IND")
     pandasTX.addColumn("donorindex", "0")
+    pandasTX.write()
 
 # end ContributionsTransforms  
     
@@ -75,18 +76,20 @@ def ParseCityStateZip(cityStateZip) :
 
 def TransformAddress(pandasTX) :
     # Read as pandas data frame
-    df = pandas.read_csv(pandasTX.fileNameIn,sep=pandasTX.delim,header=0,index_col=False)
-    df2 = df['city_sate_zip'].apply(lambda x: pandas.Series(ParseCityStateZip(x), index=['city', 'state', 'zipcode']))
+    #df = pandas.read_csv(pandasTX.fileNameIn,sep=pandasTX.delim,header=0,index_col=False)
+    df2 = pandasTX.df['city_sate_zip'].apply(lambda x: pandas.Series(ParseCityStateZip(x), index=['city', 'state', 'zipcode']))
     fileNameOut = pandasTX.fileNameIn.replace(".", "_TransformAddress.")
 
     # merge rows
-    frames = [df, df2]
+    frames = [pandasTX.df, df2]
     dfOut = pandas.concat(frames, axis=1)
 
+    # reload df from temp file to reset columns
     # write to temp file
     dfOut.to_csv(fileNameOut, encoding='utf-8', index=False, header=pandasTX.headers, sep=pandasTX.delim)
+    pandasTX.read_from(fileNameOut)
     # replace in File with temp file
-    shutil.move(fileNameOut, pandasTX.fileNameIn)
+    os.remove(fileNameOut)
 # end TransformAddress
 
 def ParseCandidateFromContrib(candidate) :
@@ -157,7 +160,7 @@ def GetCandidateInfo(pandasTX) :
             sqlWhere += " AND (district = " + district + ")" # integer
         # endif district
 
-        print(sqlWhere)
+        # print(sqlWhere)
         cand_id = SQL.SelectIdWhere(conn, table, sqlWhere)
         
         #sqlWhere = " id = " + cand_id
@@ -181,6 +184,7 @@ dirDBFiles = os.path.join(dirData,  "DBFiles")
 if not os.path.exists(dirDBFiles):
     os.makedirs(dirDBFiles)
 
+
 ##############################################
 # FL House District Candidates
 ##############################################
@@ -189,7 +193,12 @@ dirOut = os.path.join(dirDBFiles, "2022HD")
 if not os.path.exists(dirOut):
     os.makedirs(dirOut)
 
+testFile = "HD101_DEM_Hillary_Cassel_contrib.csv"
+
 for contribFile in os.listdir(dirIn) :
+    #if (contribFile != testFile) :
+    #    continue
+
     print(contribFile)
     fileNameIn = os.path.join(dirIn, contribFile)
     outName = contribFile.replace(".csv","_DBFile.csv")

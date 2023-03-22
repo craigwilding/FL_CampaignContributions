@@ -213,11 +213,11 @@ def SelectIdWhere(connection, table, whereSql="") :
     sql = "SELECT id FROM " + table
     sql += " " + whereSql
     with connection.cursor() as cursor:
-        print(sql)
+        # print(sql)
         cursor.execute(sql)
         recordCount = cursor.fetchone()
         id = str(recordCount[0])
-        print("FOUND ID: " + str(recordCount[0]) + " in " + table)
+        # print("FOUND ID: " + str(recordCount[0]) + " in " + table)
     # end with cursor 
     return id          
 # end SelectIdWhere

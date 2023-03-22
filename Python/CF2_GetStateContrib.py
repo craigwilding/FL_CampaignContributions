@@ -1,5 +1,6 @@
 import os
 import shutil
+import PandasTransforms as PTX
 import csv
 from csv import DictReader
 from csv import DictWriter
@@ -77,21 +78,41 @@ def CountContributions(dirIn, fileNameOut) :
         firstName = nameParts[2]
         lastName = nameParts[3]
 
+        Candidate = CandidateClass()
+        Candidate.district = district
+        Candidate.party = party
+        Candidate.name = firstName + " " + lastName
+
         # check each HD contribution
         fileNameIn = os.path.join(dirIn, contribFile)
+        pandasTX = PTX.PandasTransform(fileNameIn, delim=PTX.COMMA, headers=True)
+
+        # Get Candidate total contributions
+        total = pandasTX.df["amount"].sum(axis=0)
+        print(total)
+        Candidate.total = round(total, 2)
+        print("candidate amount = " + str(Candidate.total))
+
+        # Get Party contributions
+        listParty = listREPparty;
+        if ("DEM" == party) :
+            listParty = listDEMparty;
+        dfPartyContrib = pandasTX.selectRows("contributor", listParty)
+        total = dfPartyContrib["amount"].sum(axis=0)
+        Candidate.party_amount = round(total, 2)
+        print("party amount = " + str(Candidate.party_amount))
+
+        """
         with open(fileNameIn, 'r') as read_obj:
             csv_dict_reader = DictReader(read_obj)
 
-            Candidate = CandidateClass()
-            Candidate.district = district
-            Candidate.party = party
-            Candidate.name = firstName + " " + lastName
+
 
             for row in csv_dict_reader:  
                 
-                amountIn = float(row["Amount"])
+                amountIn = float(row["amount"])
                 Candidate.total += amountIn
-                contributor = row["Contributor Name"]
+                contributor = row["contributor"]
                 # check for party donor
                 if (isPartyDonor(contributor, party)) :
                     Candidate.party_amount += amountIn
@@ -99,21 +120,23 @@ def CountContributions(dirIn, fileNameOut) :
 
                 #end if
             # end for each row
-            
-            # Save to dictionary
-            if (district in dictDistrict) :
-                dictParties = dictDistrict[district]
-                dictParties[party] = Candidate
-                dictDistrict[district] = dictParties
-            else :
-                # new entry
-                dictParties = {}
-                dictParties[party] = Candidate
-                dictDistrict[district] = dictParties
-            # end add to dictionary
-
         # end with read csv
-        del read_obj
+        del read_obj    
+        """
+        
+        # Save to dictionary
+        if (district in dictDistrict) :
+            dictParties = dictDistrict[district]
+            dictParties[party] = Candidate
+            dictDistrict[district] = dictParties
+        else :
+            # new entry
+            dictParties = {}
+            dictParties[party] = Candidate
+            dictDistrict[district] = dictParties
+        # end add to dictionary
+
+
     # end for contrib directory
 
     with open(fileNameOut, 'w', newline='') as write_csv:
@@ -152,7 +175,10 @@ def CountContributions(dirIn, fileNameOut) :
             else :
                 overspend = REP_Candidate.total - DEM_Candidate.total
 
+            overspend = round(overspend, 2)
+
             district_total = DEM_Candidate.total + REP_Candidate.total
+            district_total = round(district_total, 2)
                 
             rowOut["overspend"] = overspend
             rowOut["district_total"] = district_total

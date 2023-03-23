@@ -1,7 +1,7 @@
 import os
 import shutil
 import pandas
-import Python.PandasTransforms_Old as PTX
+import PandasTransforms as PTX
 import sys
 sys.path.insert(0, '/workspaces/vscode-remote-try-python/PostgreSQL')
 import SQLCommands as SQL
@@ -13,6 +13,3 @@ os.chdir(wrksp)
 
 print(os.getcwd())
 
-with SQL.Connect() as conn :
-    SQL.SelectCountWhere(conn, "contributions", "")
-# end with conn

@@ -3,7 +3,7 @@
 This collects campaign contribution data pulled from the [FL Campaign Finance Database](https://dos.elections.myflorida.com/campaign-finance/contributions/).  I have added the campaign contributions of all [FL House and Senate candidates](https://dos.elections.myflorida.com/candidates/Index.asp) in 2022.  The Python scripts go through the contribution files and counts the campaign contributions raised in each district.
 
 ## District Comparisons
-This creates a .csv file in the **Results** folder which contains counts for each district and candidate. 
+This creates a .csv file in the **Results** folder which compares the money raised by DEM and REP candidates. 
 The available columns are
 1. District number
 2. DEM Candidate Name
@@ -17,8 +17,11 @@ The available columns are
 
 
 ## State Level
-The state-level results by house district are completed.
-I will be working on repeating the excercise for state senate districts.
+The state-level results for comparing candidate contributions by FL house and senate districts are completed.
+
+[2022 FL House District comparison](https://github.com/craigwilding/FL_CampaignContributions/blob/main/Results/State%20Races/2022HD_Contrib_byDistrict.csv)
+
+[2022 FL Senate District comparison](https://github.com/craigwilding/FL_CampaignContributions/blob/main/Results/State%20Races/2022SD_Contrib_byDistrict.csv)
 
 ### County Level
 I hope to expand to county-level candidates, but this requires pulling data from each of the 67 counties.
@@ -32,24 +35,30 @@ Selenium and the [Chrome web-driver](https://chromedriver.chromium.org/downloads
 ## Data Processing
 This is the order I am running the scripts:
 ### Extract
-1. CF0_GetWebFLContribHD2022.py   (NOTE: Ran outside of codespace)  This uses Selenium web driver to pull data from the Florida Contributions Database
-2. CF1_FixBadData.py   - Fixes contribution files that got converted to binary due to bad data.
-3. CF1a_RemoveAddressInfo.py - Remove the street address for security.  I don't want to publish a person's personal address 
-4. Upload voter files from the [Florida Division of Elections](https://dos.myflorida.com/elections/data-statistics/voter-registration-statistics/voter-extract-disk-request/) into the DATA/VoterFiles Folder
+1. Candidates: The list of FL House and Senate candidates was pulled from the [FL DOE Candidate database](https://dos.elections.myflorida.com/candidates/CanList.asp)
+1. Contributions: Candidate contributions were pulled from the [Florida Contributions Database](https://dos.elections.myflorida.com/campaign-finance/contributions/)  See [CF0_GetWebFLContribHD2022.py](Python/CF0_GetWebFLContribHD2022.py)   for the Selenium web driver to automate downloading data from the website.
+2. Voter Files: Provided from the [Florida Division of Elections](https://dos.myflorida.com/elections/data-statistics/voter-registration-statistics/voter-extract-disk-request/) into the DATA/VoterFiles Folder
 
 ### Transform
-1. VF_TRFM1_RemoveAddress.py   Remove address, phone, email and unneeded columns from original voter file
-2. VF_TRFM2_AddHeader.py   Add column headers for later use
-1. VF_TRFM3_RemoveExempt.py   Remove exempt records where voter info is hidden
+1. TRFM_Candidates.py   Clean non-ascii characters.  Reformat for loading to database
+2. TRFM_CampaignDonations.py   Clean non-ascii, and bad characters.  Parse city, state, and zip from address.  Reformat for loading to database
+3. VF_TRFM1_RemoveAddress.py   Remove address, phone, email and unneeded columns from original voter file
+4. VF_TRFM2_AddHeader.py   Add column headers for later use
+5. VF_TRFM3_RemoveExempt.py   Remove exempt records where voter info is hidden
 ### Load
-1. CREATE_Voters2022.py   Create Voter database
-2. LOAD_Voters2022.py   Load Voter database from transformed DB file
+1. CREATE_Candidates.py   Create Candidate database
+2. LOAD_Candidates.py   Load Candidate database from transformed DB file
+3. CREATE_Contributions.py   Create Contributions database
+4. LOAD_Contributions.py   Load Contributions database from transformed DB file
+5. CREATE_Voters2022.py   Create Voter database
+6. LOAD_Voters2022.py   Load Voter database from transformed DB file
 
 ### Process
-4. CF2_GetStateContrib.py - Parse the contribution files and count totals per state house district
+1. CF2_GetStateContrib.py - Parse the contribution files and count totals per state house district
 ### Results
-5. 2022HD_Contrib_byDistrict.csv - Table of contributions per state house district
-6. 2022SD_Contrib_byDistrict.csv - Table of contributions per state senate district
+1. [2022HD_Contrib_byDistrict.csv](https://github.com/craigwilding/FL_CampaignContributions/blob/main/Results/State%20Races/2022HD_Contrib_byDistrict.csv) - Table of contributions per state house district
+2. [2022SD_Contrib_byDistrict.csv](https://github.com/craigwilding/FL_CampaignContributions/blob/main/Results/State%20Races/2022SD_Contrib_byDistrict.csv) - Table of contributions per state senate district
+
 ## Contributing
 
 This project has been made public for prospective employers to see as an example of data that I work with.

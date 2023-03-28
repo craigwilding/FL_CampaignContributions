@@ -39,9 +39,11 @@ class CandidateClass:
 
 # Republican Donors
 listREPparty = ["FLORIDA HOUSE REPUBLICAN CAMPAIGN COMMITTEE", "REPUBLICAN PARTY OF FLORIDA", "Florida Republican Senatorial Campaign Committee"]
+listREPparty += ["Florida Republican Senatorial Campaign Committee, Inc."]
 
 # Democratic Donors
 listDEMparty = ["Florida Democratic Legislative Campaign Committee", "Florida Democratic Party", "Senate Victory"]
+listDEMparty += ["Senate Victory PC"]
 
 # is the donor one of the political parties?
 def isPartyDonor(contributor, party_code) :
@@ -97,7 +99,9 @@ def CountContributions(dirIn, fileNameOut) :
         listParty = listREPparty;
         if ("DEM" == party) :
             listParty = listDEMparty;
-        dfPartyContrib = pandasTX.selectRows("contributor", listParty)
+        
+        listPartyUpper = [x.upper() for x in listParty]
+        dfPartyContrib = pandasTX.selectRows("contributor", listPartyUpper)
         total = dfPartyContrib["amount"].sum(axis=0)
         Candidate.party_amount = round(total, 2)
         print("party amount = " + str(Candidate.party_amount))
